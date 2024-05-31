@@ -1,0 +1,309 @@
+ELTGNR_CD
+MBER_UID
+DVLP_RESRCE_CMMN_CD
+BSNS_PARTCPTN_STTUS_CMMN_CD
+ELTGNR_NM
+EQP_CPCTY
+EQP_CPCTY_CMMN_CD
+LOCPLC
+BIZRNO
+KMOS_MBERNO
+KMOS_PRMISNNO
+KMOS_REGISTNO
+KMOS_REC_ACNTNO
+ESS_YN
+ESS_CPCTY
+REGIST_DT
+UPDT_DT
+BSNS_PARTCPTN_DT
+
+VPP_ELTGNR_CD
+DVLP_RESRCE_CMMN_CD
+EQP_CPCTY
+LOCPLC
+
+
+SHOW ENGINES
+
+CREATE TABLE `k_mber_eltgnr_dummy` (
+  `ELTGNR_CD` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '발전기 uid',
+  `BSNS_PARTCPTN_STTUS_CMMN_CD` varchar(36) DEFAULT NULL COMMENT '사업 참여 상태 공통 코드',
+  `TITLE` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '계약정보 명',
+  `EQP_CPCTY_CMMN_CD` varchar(36) DEFAULT NULL COMMENT '설비용량 공통 코드',
+  `BIZRNO` varchar(10) DEFAULT NULL COMMENT '사업자등록번호',
+  `KMOS_MBERNO` varchar(40) DEFAULT NULL COMMENT 'KMOS 회원번호',
+  `KMOS_PRMISNNO` varchar(40) DEFAULT NULL COMMENT 'KMOS 허가번호',
+  `KMOS_REGISTNO` varchar(40) DEFAULT NULL COMMENT 'KMOS 등록번호',
+  `KMOS_REC_ACNTNO` varchar(40) DEFAULT NULL COMMENT 'KMOS REC 계정번호',
+  `ESS_YN` char(1) DEFAULT NULL COMMENT 'ESS 유무',
+  `ESS_CPCTY` decimal(10,0) DEFAULT NULL COMMENT 'ESS 용량',
+  `REGIST_DT` varchar(100) DEFAULT NULL COMMENT '등록 일시',
+  `UPDT_DT` datetime DEFAULT NULL COMMENT '수정 일시',
+  `BSNS_PARTCPTN_DT` datetime DEFAULT NULL COMMENT '사업 참여 일시',
+  `MRNR_SPORT_CMMN_CD` varchar(100) DEFAULT NULL COMMENT '계량기 지원 공통 코드',
+  `CSTMR_DSTBRT` decimal(3,0) DEFAULT NULL COMMENT '고객 분배율',
+  `BSNM_DSTBRT` decimal(3,0) DEFAULT NULL COMMENT '사업자 분배율',
+  `CNTRCT_DT` datetime DEFAULT NULL COMMENT '계약 일시',
+  `MBER_ID` varchar(50) DEFAULT NULL COMMENT '회원 아이디',
+  `ELTGNR_NM` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`ELTGNR_CD`),
+  UNIQUE KEY `k_mber_eltgnr_dummy_un` (`ELTGNR_CD`),
+  KEY `k_mber_eltgnr_dummy_FK` (`EQP_CPCTY_CMMN_CD`),
+  KEY `k_mber_eltgnr_dummy_FK_1` (`BSNS_PARTCPTN_STTUS_CMMN_CD`),
+  KEY `k_mber_eltgnr_dummy_FK_3` (`MRNR_SPORT_CMMN_CD`),
+  CONSTRAINT `k_mber_eltgnr_dummy_FK` FOREIGN KEY (`EQP_CPCTY_CMMN_CD`) REFERENCES `k_cmm_dcode` (`CMMN_CD`),
+  CONSTRAINT `k_mber_eltgnr_dummy_FK_1` FOREIGN KEY (`BSNS_PARTCPTN_STTUS_CMMN_CD`) REFERENCES `k_cmm_dcode` (`CMMN_CD`),
+  CONSTRAINT `k_mber_eltgnr_dummy_FK_3` FOREIGN KEY (`MRNR_SPORT_CMMN_CD`) REFERENCES `k_cmm_dcode` (`CMMN_CD`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+CREATE TABLE `vpp_contract_info` (
+  `oid` varchar(45) NOT NULL,
+  `sid` varchar(45) NOT NULL,
+  `doc_type` varchar(45) NOT NULL,
+  `title` varchar(200) NOT NULL,
+  `revenue_type` varchar(10) NOT NULL,
+  `revenue_type_etc` varchar(45) DEFAULT NULL,
+  `revenue_rate` varchar(60) DEFAULT NULL,
+  `pr_min_flag` varchar(20) DEFAULT NULL,
+  `pr_kind` varchar(30) DEFAULT NULL,
+  `pr_kind_value` varchar(30) DEFAULT NULL,
+  `revenue_user_info` text,
+  `settlement_info` text,
+  `invoice_info` text,
+  `contract_period` text,
+  `business_number` varchar(50) DEFAULT NULL,
+  `vaid` varchar(36) DEFAULT NULL,
+  `memo` text,
+  `attachment` text,
+  `search_key` varchar(100) DEFAULT NULL,
+  `created_ts` bigint NOT NULL,
+  `updated_ts` bigint DEFAULT NULL,
+  `created_by` varchar(100) NOT NULL,
+  `updated_by` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`sid`,`doc_type`)
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8
+CONNECTION='mysql://encored:k@mip012#@db-2g7ql.vpc-cdb-krs.gov-ntruss.com:13306/iderms_config/vpp_contract_info';
+
+
+
+
+CREATE TABLE `site` (
+  `sid` varchar(36) NOT NULL,
+  `oid` varchar(36) NOT NULL,
+  `name` varchar(36) NOT NULL,
+  `location` varchar(36) NOT NULL,
+  `resource_type` tinyint NOT NULL,
+  `ess` tinyint NOT NULL,
+  `ess_info` text,
+  `site_type` int DEFAULT '2',
+  `is_consumer` tinyint NOT NULL DEFAULT '0',
+  `vpp_group_id` varchar(36) DEFAULT NULL,
+  `dr_group_id` varchar(36) DEFAULT NULL,
+  `spc_group_id` varchar(36) DEFAULT NULL,
+  `market_id` varchar(20) DEFAULT NULL,
+  `grid_x` decimal(10,0) DEFAULT NULL,
+  `grid_y` decimal(10,0) DEFAULT NULL,
+  `station_id` decimal(10,0) DEFAULT NULL,
+  `latlng` varchar(50) DEFAULT NULL,
+  `tz` varchar(45) DEFAULT 'Asia/Seoul',
+  `address` varchar(128) DEFAULT NULL,
+  `changed_location` tinyint DEFAULT '0',
+  `detail_info` text,
+  `utility` text,
+  `dr_info` text,
+  `vpp_info` text,
+  `power_market` text,
+  `cctv_url` text,
+  `kpx_genid` varchar(50) DEFAULT NULL,
+  `kpx_emsid` varchar(50) DEFAULT NULL,
+  `kpx_transvol` text,
+  `kpx_dlcd` text,
+  `kpx_forecast` int DEFAULT NULL,
+  `business_year` varchar(50) DEFAULT NULL,
+  `contact` text,
+  `manual_acquisition` int DEFAULT '0',
+  `ownership_type` int DEFAULT '1',
+  `remote_control` tinyint DEFAULT '0',
+  `rec_weight` varchar(10) DEFAULT NULL,
+  `rec_unit_price` varchar(20) DEFAULT NULL,
+  `eis_id` varchar(45) DEFAULT NULL,
+  `local_sid` varchar(45) DEFAULT NULL,
+  `is_spc` tinyint DEFAULT NULL,
+  `reserved_capacity` varchar(20) DEFAULT NULL,
+  `installed_capacity` varchar(20) DEFAULT NULL,
+  `capacity` varchar(512) DEFAULT NULL,
+  `spc_share` float DEFAULT NULL,
+  `sort_no` varchar(10) DEFAULT NULL,
+  `description` varchar(512) DEFAULT NULL,
+  `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`sid`),
+  UNIQUE KEY `site_oid_name_unique` (`oid`,`name`),
+  KEY `site_oid_fk_idx` (`oid`),
+  KEY `site_vpp_group_id_fk_idx` (`vpp_group_id`),
+  KEY `site_dr_group_id_fk_idx` (`dr_group_id`),
+  CONSTRAINT `site_dr_group_id_fk` FOREIGN KEY (`dr_group_id`) REFERENCES `dr_group` (`dgid`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `site_oid_fk` FOREIGN KEY (`oid`) REFERENCES `org` (`oid`),
+  CONSTRAINT `site_vpp_group_id_fk` FOREIGN KEY (`vpp_group_id`) REFERENCES `vpp_group` (`vgid`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8
+CONNECTION='mysql://encored:k@mip012#@db-2g7ql.vpc-cdb-krs.gov-ntruss.com:13306/iderms_config/site';
+
+
+
+ALTER TABLE komipo_homepage.k_mber_dstbrt MODIFY COLUMN CSTMR_DSTBRT decimal(3,0) NULL COMMENT '고객 분배율';
+ALTER TABLE komipo_homepage.k_mber_dstbrt MODIFY COLUMN BSNM_DSTBRT decimal(3,0) NULL COMMENT '사업자 분배율';
+
+
+
+INSERT INTO K_MBER_ELTGNR
+   (ELTGNR_CD
+   , MBER_UID
+   , DVLP_RESRCE_CMMN_CD
+   , BSNS_PARTCPTN_STTUS_CMMN_CD
+   , ELTGNR_NM
+   , EQP_CPCTY
+   , EQP_CPCTY_CMMN_CD
+   , LOCPLC
+   , BIZRNO
+   , KMOS_MBERNO
+   , KMOS_PRMISNNO
+   , KMOS_REGISTNO
+   , KMOS_REC_ACNTNO
+   , ESS_YN
+   , ESS_CPCTY
+   , BSNS_PARTCPTN_DT
+   , REGIST_DT)
+SELECT C.ELTGNR_CD,
+D.MBER_UID,
+IF (A.resource_type = 1,"68caa790-e6c1-4de2-9370-81ae5f8c10ae","2c53a1a5-14bf-4d44-85ed-31820acdec27") AS DVLP_RESRCE_CMMN_CD,
+C.BSNS_PARTCPTN_STTUS_CMMN_CD,
+C.ELTGNR_NM,
+A.installed_capacity AS EQP_CPCTY,
+C.EQP_CPCTY_CMMN_CD,
+A.address AS LOCPLC,
+C.KMOS_MBERNO,
+C.KMOS_PRMISNNO,
+C.KMOS_REGISTNO,
+C.KMOS_REC_ACNTNO,
+C.ESS_YN,
+C.ESS_CPCTY,
+C.BSNS_PARTCPTN_DT
+C.REGIST_DT
+FROM site A 
+JOIN vpp_contract_info B ON A.sid = B.sid
+JOIN k_eltgnr_dummy C ON B.title = C.title
+JOIN k_mber_mgm D ON C.MBER_ID = D.MBER_ID;
+
+"f4d343da-cd11-4431-8884-72e90ec4d18a"
+
+INSERT INTO K_MBER_DSTBRT /* 발전기 수익배분 */
+    (ELTGNR_CD, MRNR_SPORT_CMMN_CD, CSTMR_DSTBRT, BSNM_DSTBRT, REGIST_DT, REGISTER)
+SELECT C.ELTGNR_CD, 
+C.MRNR_SPORT_CMMN_CD,
+C.CSTMR_DSTBRT,
+C.BSNM_DSTBRT,
+C.REGIST_DT,
+D.MBER_UID
+FROM site A 
+JOIN vpp_contract_info B ON A.sid = B.sid
+JOIN k_eltgnr_dummy C ON B.title = C.title
+JOIN k_mber_mgm D ON C.MBER_ID = D.MBER_ID;
+
+
+INSERT INTO K_MBER_CNTRCT /* 발전기 계약관리 */
+   (ELTGNR_CD, VPP_ELTGNR_CD, CNTRCT_DT, REGIST_DT, REGISTER)
+SELECT C.ELTGNR_CD,
+A.sid AS VPP_ELTGNR_CD,
+C.CNTRCT_DT,
+C.REGIST_DT,
+D.MBER_UID
+FROM site A 
+JOIN vpp_contract_info B ON A.sid = B.sid
+JOIN k_eltgnr_dummy C ON B.title = C.title
+JOIN k_mber_mgm D ON C.MBER_ID = D.MBER_ID;
+
+
+
+
+INSERT INTO K_MBER_ELTGNR
+   (ELTGNR_CD
+   , MBER_UID
+   , DVLP_RESRCE_CMMN_CD
+   , BSNS_PARTCPTN_STTUS_CMMN_CD
+   , ELTGNR_NM
+   , EQP_CPCTY
+   , EQP_CPCTY_CMMN_CD
+   , LOCPLC
+   , BIZRNO
+   , KMOS_MBERNO
+   , KMOS_PRMISNNO
+   , KMOS_REGISTNO
+   , KMOS_REC_ACNTNO
+   , ESS_YN
+   , ESS_CPCTY
+   , BSNS_PARTCPTN_DT
+   , REGIST_DT)
+SELECT 
+  A.ELTGNR_CD,
+  B.MBER_UID,
+  A.DVLP_RESRCE_CMMN_CD,
+  A.BSNS_PARTCPTN_STTUS_CMMN_CD,
+  A.ELTGNR_NM,
+  A.EQP_CPCTY,
+  A.EQP_CPCTY_CMMN_CD,
+  A.LOCPLC,
+  A.BIZRNO,
+  A.KMOS_MBERNO,
+  A.KMOS_PRMISNNO,
+  A.KMOS_REGISTNO,
+  A.KMOS_REC_ACNTNO,
+  A.ESS_YN,
+  A.ESS_CPCTY,
+  A.BSNS_PARTCPTN_DT
+  A.REGIST_DT
+FROM k_eltgnr_dummy A 
+JOIN k_mber_mgm B 
+  ON A.MBER_ID = B.MBER_ID;
+
+
+"f4d343da-cd11-4431-8884-72e90ec4d18a"
+
+INSERT INTO K_MBER_DSTBRT /* 발전기 수익배분 */
+   (ELTGNR_CD
+   , MRNR_SPORT_CMMN_CD
+   , CSTMR_DSTBRT
+   , BSNM_DSTBRT
+   , REGIST_DT
+   , REGISTER)
+SELECT 
+  A.ELTGNR_CD, 
+  A.MRNR_SPORT_CMMN_CD,
+  A.CSTMR_DSTBRT,
+  A.BSNM_DSTBRT,
+  A.REGIST_DT,
+  B.MBER_UID
+FROM k_eltgnr_dummy A
+JOIN k_mber_mgm B
+  ON A.MBER_ID = B.MBER_ID;
+
+
+INSERT INTO K_MBER_CNTRCT /* 발전기 계약관리 */
+   (ELTGNR_CD
+   , VPP_ELTGNR_CD
+   , CNTRCT_DT
+   , REGIST_DT
+   , REGISTER)
+SELECT 
+  A.ELTGNR_CD,
+  A.VPP_ELTGNR_CD,
+  A.CNTRCT_DT,
+  A.REGIST_DT,
+  B.MBER_UID
+FROM k_eltgnr_dummy A
+JOIN k_mber_mgm B
+  ON A.MBER_ID = B.MBER_ID;
+
+
+
+
